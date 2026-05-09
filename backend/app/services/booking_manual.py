@@ -2,35 +2,16 @@
 
 from collections import Counter, defaultdict
 
+from app.services._helpers import line_id, line_sample
+
 MIN_EVIDENCE_COUNT = 5
 MIN_CONFIDENCE = 0.75
 MAX_RULES_PER_KIND = 6
 MAX_TOTAL_RULES = 10
 
 
-def _line_id(entry: dict) -> str:
-    return f"{entry['document_id']}/{entry['line_id']}"
-
-
-def _line_sample(entry: dict) -> dict:
-    return {
-        "document_id": entry["document_id"],
-        "line_id": entry["line_id"],
-        "posting_date": entry["posting_date"],
-        "gl_account": entry["gl_account"],
-        "cost_center": entry.get("cost_center", ""),
-        "amount": entry["amount"],
-        "currency": entry["currency"],
-        "debit_credit": entry["debit_credit"],
-        "booking_text": entry["booking_text"],
-        "vendor_id": entry.get("vendor_id", ""),
-        "customer_id": entry.get("customer_id", ""),
-        "tax_code": entry.get("tax_code", ""),
-    }
-
-
 def _examples(entries: list[dict], predicate, limit: int = 3) -> list[dict]:
-    return [_line_sample(entry) for entry in entries if predicate(entry)][:limit]
+    return [line_sample(entry) for entry in entries if predicate(entry)][:limit]
 
 
 def _dominant_rules(
@@ -71,7 +52,7 @@ def _dominant_rules(
             "confidence": round(confidence, 2),
             "evidence_count": evidence_count,
             "line_ids": [
-                _line_id(entry) for entry in entries
+                line_id(entry) for entry in entries
                 if entry.get(group_field) == group_value
                 and entry.get(value_field) == expected_value
             ][:3],
@@ -123,7 +104,7 @@ def _recurring_text_account_rules(entries: list[dict]) -> list[dict]:
             "confidence": round(confidence, 2),
             "evidence_count": evidence_count,
             "line_ids": [
-                _line_id(entry) for entry in entries
+                line_id(entry) for entry in entries
                 if entry["booking_text"] == booking_text
                 and entry["gl_account"] == expected_account
             ][:3],

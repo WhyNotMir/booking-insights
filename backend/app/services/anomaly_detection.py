@@ -4,28 +4,13 @@ from collections import Counter, defaultdict
 from difflib import SequenceMatcher
 import re
 
+from app.services._helpers import line_id, line_sample
+
 MIN_COMMON_TEXT_COUNT = 2
 MAX_VARIANT_COUNT = 1
 TEXT_SIMILARITY_THRESHOLD = 0.76
 ACCOUNT_DOMINANCE_THRESHOLD = 0.7
 ROLE_SUFFIXES = {"vat", "payable", "receivable"}
-
-
-def _line_id(entry: dict) -> str:
-    return f"{entry['document_id']}/{entry['line_id']}"
-
-
-def _line_sample(entry: dict) -> dict:
-    return {
-        "document_id": entry["document_id"],
-        "line_id": entry["line_id"],
-        "posting_date": entry["posting_date"],
-        "gl_account": entry["gl_account"],
-        "amount": entry["amount"],
-        "currency": entry["currency"],
-        "debit_credit": entry["debit_credit"],
-        "booking_text": entry["booking_text"],
-    }
 
 
 def _normalize_text(text: str) -> str:
@@ -93,9 +78,9 @@ def _detect_text_variants(entries: list[dict]) -> list[dict]:
         findings.append({
             "type": "text_variant",
             "title": "Suspicious booking text variant",
-            "line_ids": [_line_id(entry) for entry in affected],
-            "affected_lines": [_line_sample(entry) for entry in affected],
-            "evidence_examples": [_line_sample(entry) for entry in evidence],
+            "line_ids": [line_id(entry) for entry in affected],
+            "affected_lines": [line_sample(entry) for entry in affected],
+            "evidence_examples": [line_sample(entry) for entry in evidence],
             "reason": f"'{text}' is rare and closely resembles recurring text '{best_match}'.",
             "explanation": "Rare near-duplicate wording can indicate a typo or inconsistent manual posting text.",
             "confidence": round(min(0.98, 0.55 + best_score * 0.4), 2),
@@ -132,9 +117,9 @@ def _detect_unusual_account_text_combinations(entries: list[dict]) -> list[dict]
             findings.append({
                 "type": "account_text_combo",
                 "title": "Unusual account and text combination",
-                "line_ids": [_line_id(entry)],
-                "affected_lines": [_line_sample(entry)],
-                "evidence_examples": [_line_sample(candidate) for candidate in evidence],
+                "line_ids": [line_id(entry)],
+                "affected_lines": [line_sample(entry)],
+                "evidence_examples": [line_sample(candidate) for candidate in evidence],
                 "expected_gl_account": dominant_account,
                 "actual_gl_account": entry["gl_account"],
                 "reason": (

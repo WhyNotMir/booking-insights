@@ -32,6 +32,8 @@ from datetime import date, datetime
 from difflib import SequenceMatcher
 import re
 
+from app.services._helpers import line_id, line_sample
+
 MIN_LINE_CONFIDENCE = 0.7
 MAX_DATE_GAP_DAYS = 7
 TEXT_SIMILARITY_FLOOR = 0.6
@@ -41,27 +43,6 @@ W_COUNTERPARTY = 0.25
 W_TEXT = 0.30
 W_DATE = 0.20
 W_GL = 0.10
-
-
-def _line_id(entry: dict) -> str:
-    return f"{entry['document_id']}/{entry['line_id']}"
-
-
-def _line_sample(entry: dict) -> dict:
-    return {
-        "document_id": entry["document_id"],
-        "line_id": entry["line_id"],
-        "posting_date": entry["posting_date"],
-        "gl_account": entry["gl_account"],
-        "cost_center": entry.get("cost_center", ""),
-        "amount": entry["amount"],
-        "currency": entry["currency"],
-        "debit_credit": entry["debit_credit"],
-        "booking_text": entry["booking_text"],
-        "vendor_id": entry.get("vendor_id", ""),
-        "customer_id": entry.get("customer_id", ""),
-        "tax_code": entry.get("tax_code", ""),
-    }
 
 
 def _normalize_text(text: str) -> str:
@@ -141,7 +122,7 @@ def _line_pair_candidates(entries: list[dict]) -> list[dict]:
                 if a["document_id"] == b["document_id"]:
                     continue
 
-                pair_key = tuple(sorted([_line_id(a), _line_id(b)]))
+                pair_key = tuple(sorted([line_id(a), line_id(b)]))
                 if pair_key in seen:
                     continue
                 seen.add(pair_key)
@@ -216,7 +197,7 @@ def detect(entries: list[dict]) -> list[dict]:
             "confidence": round(confidence, 2),
             "evidence_count": len(line_pairs),
             "criteria": _cluster_criteria(line_pairs, doc_a, doc_b, lines_a, lines_b),
-            "lines": [_line_sample(entry) for entry in lines_a + lines_b],
+            "lines": [line_sample(entry) for entry in lines_a + lines_b],
         })
 
     findings.sort(key=lambda f: f["confidence"], reverse=True)
