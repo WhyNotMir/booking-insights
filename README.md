@@ -121,7 +121,7 @@ Five concrete findings from a post-implementation audit. **#1 and #4 are impleme
 
 4. **Operations — `lru_cache` on `load_entries` never invalidates.** After `make seed` while the dev server runs, the cached list is served until restart — caused a stale 500 during development. Fixed by keying the cache on `os.path.getmtime(DATA_PATH)`. Implemented.
 
-5. **UX — section headers don't show finding counts.** No scope before scrolling. *Fix:* lift fetch state to `page.tsx` so each header can render a count badge.
+5. **UX — section headers don't show finding counts.** No scope before scrolling. *Fix:* lift fetch state to `page.tsx` so each header can render a count badge. Implemented.
 
 ## Task 3 — Knowledge graph context
 

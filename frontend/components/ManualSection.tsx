@@ -45,30 +45,41 @@ export default function ManualSection() {
     return <p className="empty-state">No booking rules derived yet.</p>;
   }
 
+  const totalExamples = items.reduce(
+    (total, item) => total + (item.evidence_examples?.length ?? 0),
+    0
+  );
+
   return (
-    <div className="findings">
-      {items.map((item, index) => (
-        <article className="finding" key={`${item.title}-${index}`}>
-          <header className="finding-header">
-            <strong>{item.title ?? "Booking rule"}</strong>
-            {typeof item.confidence === "number" && (
-              <span>{Math.round(item.confidence * 100)}%</span>
+    <>
+      <div className="section-summary">
+        <span>{items.length} validation check{items.length === 1 ? "" : "s"}</span>
+        {totalExamples > 0 && <span>{totalExamples} evidence examples shown</span>}
+      </div>
+      <div className="findings">
+        {items.map((item, index) => (
+          <article className="finding" key={`${item.title}-${index}`}>
+            <header className="finding-header">
+              <strong>{item.title ?? "Booking rule"}</strong>
+              {typeof item.confidence === "number" && (
+                <span>{Math.round(item.confidence * 100)}%</span>
+              )}
+            </header>
+            {item.validation_check && <p>{item.validation_check}</p>}
+            {item.explanation && <p className="muted">{item.explanation}</p>}
+            {item.evidence_examples && item.evidence_examples.length > 0 && (
+              <div className="finding-samples manual-samples">
+                <span>Evidence examples</span>
+                <ul>
+                  {item.evidence_examples.map((line) => (
+                    <EvidenceLine line={line} key={`${line.document_id}-${line.line_id}`} />
+                  ))}
+                </ul>
+              </div>
             )}
-          </header>
-          {item.validation_check && <p>{item.validation_check}</p>}
-          {item.explanation && <p className="muted">{item.explanation}</p>}
-          {item.evidence_examples && item.evidence_examples.length > 0 && (
-            <div className="finding-samples">
-              <span>Evidence examples</span>
-              <ul>
-                {item.evidence_examples.map((line) => (
-                  <EvidenceLine line={line} key={`${line.document_id}-${line.line_id}`} />
-                ))}
-              </ul>
-            </div>
-          )}
-        </article>
-      ))}
-    </div>
+          </article>
+        ))}
+      </div>
+    </>
   );
 }

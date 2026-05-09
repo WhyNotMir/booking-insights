@@ -43,45 +43,50 @@ export default function AnomalySection() {
   }
 
   return (
-    <div className="findings">
-      {items.map((item, index) => (
-        <article className="finding" key={`${item.title}-${index}`}>
-          <header className="finding-header">
-            <strong>{item.title ?? "Anomaly finding"}</strong>
-            {typeof item.confidence === "number" && (
-              <span>{Math.round(item.confidence * 100)}%</span>
+    <>
+      <div className="section-summary">
+        <span>{items.length} anomaly finding{items.length === 1 ? "" : "s"}</span>
+      </div>
+      <div className="findings">
+        {items.map((item, index) => (
+          <article className="finding" key={`${item.title}-${index}`}>
+            <header className="finding-header">
+              <strong>{item.title ?? "Anomaly finding"}</strong>
+              {typeof item.confidence === "number" && (
+                <span>{Math.round(item.confidence * 100)}%</span>
+              )}
+            </header>
+            <p>{item.reason}</p>
+            {item.explanation && <p className="muted">{item.explanation}</p>}
+            {item.line_ids && item.line_ids.length > 0 && (
+              <p className="finding-meta">Lines: {item.line_ids.join(", ")}</p>
             )}
-          </header>
-          <p>{item.reason}</p>
-          {item.explanation && <p className="muted">{item.explanation}</p>}
-          {item.line_ids && item.line_ids.length > 0 && (
-            <p className="finding-meta">Lines: {item.line_ids.join(", ")}</p>
-          )}
-          {typeof item.evidence_count === "number" && (
-            <p className="finding-meta">Evidence: {item.evidence_count} similar postings</p>
-          )}
-          {item.affected_lines && item.affected_lines.length > 0 && (
-            <div className="finding-samples">
-              <span>Affected line</span>
-              <ul>
-                {item.affected_lines.map((line) => (
-                  <LineSample line={line} key={`${line.document_id}-${line.line_id}`} />
-                ))}
-              </ul>
-            </div>
-          )}
-          {item.evidence_examples && item.evidence_examples.length > 0 && (
-            <div className="finding-samples">
-              <span>Evidence examples</span>
-              <ul>
-                {item.evidence_examples.map((line) => (
-                  <LineSample line={line} key={`${line.document_id}-${line.line_id}`} />
-                ))}
-              </ul>
-            </div>
-          )}
-        </article>
-      ))}
-    </div>
+            {typeof item.evidence_count === "number" && (
+              <p className="finding-meta">Evidence: {item.evidence_count} similar postings</p>
+            )}
+            {item.affected_lines && item.affected_lines.length > 0 && (
+              <div className="finding-samples">
+                <span>Affected line</span>
+                <ul>
+                  {item.affected_lines.map((line) => (
+                    <LineSample line={line} key={`${line.document_id}-${line.line_id}`} />
+                  ))}
+                </ul>
+              </div>
+            )}
+            {item.evidence_examples && item.evidence_examples.length > 0 && (
+              <div className="finding-samples">
+                <span>Evidence examples</span>
+                <ul>
+                  {item.evidence_examples.map((line) => (
+                    <LineSample line={line} key={`${line.document_id}-${line.line_id}`} />
+                  ))}
+                </ul>
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </>
   );
 }

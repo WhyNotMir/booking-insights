@@ -46,6 +46,17 @@ table {
   border: 1px solid #e5e7eb;
 }
 
+.table-shell {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.table-shell table {
+  border: 0;
+}
+
 th,
 td {
   padding: 10px 12px;
@@ -76,6 +87,23 @@ th {
 .findings {
   display: grid;
   gap: 12px;
+}
+
+.section-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.section-summary span {
+  border: 1px solid #d7dee8;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3d4a5c;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 9px;
 }
 
 .finding {
@@ -146,6 +174,11 @@ th {
   background: #fbfcfd;
   padding: 8px;
   font-size: 13px;
+}
+
+.manual-samples li {
+  grid-template-columns: 88px 96px 84px 132px minmax(160px, 1fr) 128px 128px 84px;
+  overflow-x: auto;
 }
 
 .finding-samples code {

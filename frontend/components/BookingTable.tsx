@@ -20,32 +20,42 @@ export default function BookingTable() {
   if (error) return <p className="error-state">Could not load entries: {error}</p>;
   if (entries.length === 0) return <p className="empty-state">No journal entries loaded yet.</p>;
 
+  const visibleEntries = entries.slice(0, 50);
+
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Document</th>
-          <th>Line</th>
-          <th>Account</th>
-          <th>D/C</th>
-          <th>Amount</th>
-          <th>Text</th>
-        </tr>
-      </thead>
-      <tbody>
-        {entries.slice(0, 50).map((entry) => (
-          <tr key={`${entry.document_id}-${entry.line_id}`}>
-            <td>{entry.posting_date}</td>
-            <td>{entry.document_id}</td>
-            <td>{entry.line_id}</td>
-            <td>{entry.gl_account}</td>
-            <td>{entry.debit_credit}</td>
-            <td>{entry.amount.toFixed(2)} {entry.currency}</td>
-            <td>{entry.booking_text}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <>
+      <div className="section-summary">
+        <span>{entries.length} journal lines</span>
+        <span>Showing first {visibleEntries.length}</span>
+      </div>
+      <div className="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Document</th>
+              <th>Line</th>
+              <th>Account</th>
+              <th>D/C</th>
+              <th>Amount</th>
+              <th>Text</th>
+            </tr>
+          </thead>
+          <tbody>
+            {visibleEntries.map((entry) => (
+              <tr key={`${entry.document_id}-${entry.line_id}`}>
+                <td>{entry.posting_date}</td>
+                <td>{entry.document_id}</td>
+                <td>{entry.line_id}</td>
+                <td>{entry.gl_account}</td>
+                <td>{entry.debit_credit}</td>
+                <td>{entry.amount.toFixed(2)} {entry.currency}</td>
+                <td>{entry.booking_text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

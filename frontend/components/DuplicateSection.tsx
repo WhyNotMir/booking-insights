@@ -42,35 +42,45 @@ export default function DuplicateSection() {
     return <p className="empty-state">No duplicate candidates above threshold.</p>;
   }
 
+  const totalPairs = items.reduce((total, item) => total + (item.evidence_count ?? 0), 0);
+
   return (
-    <div className="findings">
-      {items.map((item, index) => (
-        <article className="finding" key={`${item.title}-${index}`}>
-          <header className="finding-header">
-            <strong>{item.title ?? "Possible duplicate posting"}</strong>
-            {typeof item.confidence === "number" && (
-              <span>{Math.round(item.confidence * 100)}%</span>
+    <>
+      <div className="section-summary">
+        <span>{items.length} duplicate candidate{items.length === 1 ? "" : "s"}</span>
+        {totalPairs > 0 && (
+          <span>{totalPairs} matching line-pair{totalPairs === 1 ? "" : "s"}</span>
+        )}
+      </div>
+      <div className="findings">
+        {items.map((item, index) => (
+          <article className="finding" key={`${item.title}-${index}`}>
+            <header className="finding-header">
+              <strong>{item.title ?? "Possible duplicate posting"}</strong>
+              {typeof item.confidence === "number" && (
+                <span>{Math.round(item.confidence * 100)}%</span>
+              )}
+            </header>
+            <p className="muted">Matched on: {item.criteria.join(" · ")}</p>
+            {typeof item.evidence_count === "number" && (
+              <p className="finding-meta">
+                Evidence: {item.evidence_count} matching line-pair
+                {item.evidence_count === 1 ? "" : "s"}
+              </p>
             )}
-          </header>
-          <p className="muted">Matched on: {item.criteria.join(" · ")}</p>
-          {typeof item.evidence_count === "number" && (
-            <p className="finding-meta">
-              Evidence: {item.evidence_count} matching line-pair
-              {item.evidence_count === 1 ? "" : "s"}
-            </p>
-          )}
-          {item.lines.length > 0 && (
-            <div className="finding-samples">
-              <span>Posting lines</span>
-              <ul>
-                {item.lines.map((line) => (
-                  <LineSample line={line} key={`${line.document_id}-${line.line_id}`} />
-                ))}
-              </ul>
-            </div>
-          )}
-        </article>
-      ))}
-    </div>
+            {item.lines.length > 0 && (
+              <div className="finding-samples">
+                <span>Posting lines</span>
+                <ul>
+                  {item.lines.map((line) => (
+                    <LineSample line={line} key={`${line.document_id}-${line.line_id}`} />
+                  ))}
+                </ul>
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </>
   );
 }
