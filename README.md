@@ -12,6 +12,7 @@ Skeleton for a small web app that analyzes accounting journal entries.
 
 ```bash
 make install
+make seed
 make dev-backend
 make dev-frontend
 ```
@@ -35,10 +36,12 @@ backend/
   app/
     main.py
     models.py
+    data/
     services/
       anomaly_detection.py
       duplicate_detection.py
       booking_manual.py
+  scripts/
   tests/
 frontend/
   app/
