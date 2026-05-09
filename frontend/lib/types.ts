@@ -30,9 +30,12 @@ export interface Insight {
 }
 
 export interface DuplicateCandidate {
+  type?: string;
+  title?: string;
   confidence: number;
+  evidence_count?: number;
   criteria: string[];
-  lines: JournalLine[];
+  lines: JournalLineSample[];
 }
 
 export interface JournalLineSample {

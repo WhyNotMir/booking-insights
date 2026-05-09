@@ -58,3 +58,38 @@ def test_booking_manual_rules_include_evidence_and_validation_check():
     assert all(rule["validation_check"] for rule in rules)
     assert all(rule["evidence_count"] >= 5 for rule in rules)
     assert all(rule["evidence_examples"] for rule in rules)
+
+
+def test_duplicate_detection_finds_planted_documents():
+    entries = json.loads(DATA_PATH.read_text())
+    findings = duplicate_detection.detect(entries)
+
+    flagged_documents = {
+        line["document_id"]
+        for finding in findings
+        for line in finding["lines"]
+    }
+
+    for planted in ("DOC9991", "DOC9992", "DOC9993"):
+        assert planted in flagged_documents, f"Missing planted duplicate {planted}"
+
+
+def test_duplicate_detection_returns_document_level_clusters():
+    entries = json.loads(DATA_PATH.read_text())
+    findings = duplicate_detection.detect(entries)
+
+    assert findings, "Expected at least one duplicate finding"
+    for finding in findings:
+        assert finding["type"] == "duplicate_document"
+        assert 0 <= finding["confidence"] <= 1
+        assert finding["evidence_count"] >= 1
+        assert finding["criteria"]
+        document_ids = {line["document_id"] for line in finding["lines"]}
+        assert len(document_ids) == 2, "Cluster must span exactly two documents"
+
+
+def test_duplicate_findings_sorted_by_confidence_desc():
+    entries = json.loads(DATA_PATH.read_text())
+    findings = duplicate_detection.detect(entries)
+    confidences = [finding["confidence"] for finding in findings]
+    assert confidences == sorted(confidences, reverse=True)

@@ -57,9 +57,6 @@ export default function ManualSection() {
           </header>
           {item.validation_check && <p>{item.validation_check}</p>}
           {item.explanation && <p className="muted">{item.explanation}</p>}
-          {typeof item.evidence_count === "number" && (
-            <p className="finding-meta">Evidence: {item.evidence_count} historical postings</p>
-          )}
           {item.evidence_examples && item.evidence_examples.length > 0 && (
             <div className="finding-samples">
               <span>Evidence examples</span>
