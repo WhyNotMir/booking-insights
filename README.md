@@ -111,7 +111,7 @@ Each rule emits a `validation_check` ("When `gl_account` is X, validate `tax_cod
 
 ## Self-review
 
-Five concrete findings from a post-implementation audit. **#1 and #4 are implemented in follow-up commits.**
+Five concrete findings from a post-implementation audit. **#1, #4, and #5 are implemented in follow-up commits.**
 
 1. **Architecture — duplicated `_line_sample` / `_line_id` across detectors.** Three services had near-identical helpers but with different field shapes (8 vs 12). Extracted `app/services/_helpers.py` so every finding embeds the same payload. Implemented.
 
@@ -121,7 +121,7 @@ Five concrete findings from a post-implementation audit. **#1 and #4 are impleme
 
 4. **Operations — `lru_cache` on `load_entries` never invalidates.** After `make seed` while the dev server runs, the cached list is served until restart — caused a stale 500 during development. Fixed by keying the cache on `os.path.getmtime(DATA_PATH)`. Implemented.
 
-5. **UX — section headers don't show finding counts.** No scope before scrolling. *Fix:* lift fetch state to `page.tsx` so each header can render a count badge. Implemented.
+5. **UX — sections didn't show finding counts.** No scope before scrolling. *Fix:* added compact count summaries inside each data section for journal lines, anomaly findings, duplicate candidates, and booking-manual checks. Implemented.
 
 ## Task 3 — Knowledge graph context
 
