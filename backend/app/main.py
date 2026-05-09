@@ -1,4 +1,5 @@
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -20,10 +21,22 @@ app.add_middleware(
 )
 
 
-@lru_cache(maxsize=1)
 def load_entries() -> list[dict]:
+    """Load journal entries, automatically refreshed when the file changes.
+
+    Earlier revisions wrapped this directly in @lru_cache(maxsize=1), which
+    kept serving the first result (sometimes [] from a missing-file
+    startup) after `make seed` regenerated the JSON. Keying the cache on
+    the file's mtime means a regenerated file is picked up on the next
+    request without restarting the server.
+    """
     if not DATA_PATH.exists():
         return []
+    return _load_entries_cached(os.path.getmtime(DATA_PATH))
+
+
+@lru_cache(maxsize=1)
+def _load_entries_cached(_mtime: float) -> list[dict]:
     return json.loads(DATA_PATH.read_text())
 
 
