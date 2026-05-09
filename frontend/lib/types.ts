@@ -19,6 +19,7 @@ export interface Insight {
   title?: string;
   reason?: string;
   explanation?: string;
+  validation_check?: string;
   confidence?: number;
   evidence_count?: number;
   line_ids?: string[];
@@ -39,6 +40,12 @@ export interface JournalLineSample {
   line_id: number;
   posting_date: string;
   gl_account: string;
+
+  cost_center?: string | null;
+  vendor_id?: string | null;
+  customer_id?: string | null;
+  tax_code?: string | null;
+
   amount: number;
   currency: string;
   debit_credit: "D" | "C" | "S" | "H";

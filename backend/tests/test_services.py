@@ -38,3 +38,23 @@ def test_anomaly_detection_finds_unusual_account_text_combo():
         and "580000" in finding["reason"]
         for finding in findings
     )
+
+
+def test_booking_manual_derives_core_rule_types():
+    entries = json.loads(DATA_PATH.read_text())
+    rules = booking_manual.derive_rules(entries)
+    rule_types = {rule["type"] for rule in rules}
+
+    assert "account_tax" in rule_types
+    assert "account_cost_center" in rule_types
+    assert "recurring_text_account" in rule_types
+
+
+def test_booking_manual_rules_include_evidence_and_validation_check():
+    entries = json.loads(DATA_PATH.read_text())
+    rules = booking_manual.derive_rules(entries)
+
+    assert rules
+    assert all(rule["validation_check"] for rule in rules)
+    assert all(rule["evidence_count"] >= 5 for rule in rules)
+    assert all(rule["evidence_examples"] for rule in rules)
