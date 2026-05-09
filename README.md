@@ -50,6 +50,12 @@ Makefile
 - **stdlib-only detection.** No `rapidfuzz`/`pandas`. Dataset is ~450 lines and heuristics are simple — extra wheels would be unjustified.
 - **One module per detector.** Shared field helpers in `_helpers.py`, no shared business logic — each detector can be tuned and tested in isolation.
 
+## Scope choices
+
+- **No pandas or fuzzy-matching dependency.** The dataset is small enough for stdlib collections and `difflib`; avoiding extra dependencies keeps setup simple.
+- **Committed JSON seed plus generator.** The app can run immediately, while `make seed` still shows how the journal data is produced.
+- **Heuristics instead of ML.** Accounting review needs explainable criteria and evidence lines more than opaque model output.
+
 
 ## Accounting assumptions
 
