@@ -72,3 +72,82 @@ th {
   border-color: #f3b7b7;
   color: #9f1d1d;
 }
+
+.findings {
+  display: grid;
+  gap: 12px;
+}
+
+.finding {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.finding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.finding-header span {
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 8px;
+}
+
+.finding p {
+  margin-bottom: 8px;
+}
+
+.finding p:last-child {
+  margin-bottom: 0;
+}
+
+.finding-meta,
+.muted {
+  color: #5f6b7a;
+  font-size: 13px;
+}
+
+.finding-samples {
+  margin-top: 12px;
+}
+
+.finding-samples > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #5f6b7a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.finding-samples ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.finding-samples li {
+  display: grid;
+  grid-template-columns: 88px 96px 84px 132px minmax(180px, 1fr);
+  gap: 8px;
+  align-items: center;
+  border: 1px solid #edf0f3;
+  border-radius: 4px;
+  background: #fbfcfd;
+  padding: 8px;
+  font-size: 13px;
+}
+
+.finding-samples code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
